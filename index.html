@@ -17,11 +17,28 @@ function login() {
   .then(data => {
     console.log(data);
 
-    if (data.status === "success") {
-      localStorage.setItem("achi_login", "true");
-      localStorage.setItem("achi_role", data.role);
+ if (data.status === "success") {
 
-      alert("Login berhasil sebagai " + data.role);
+  localStorage.setItem("achi_login", "true");
+  localStorage.setItem("achi_role", data.role);
+  localStorage.setItem("achi_nama", data.nama);
+  localStorage.setItem("achi_kapal", data.kapal);
+
+  if (data.role === "ABK") {
+    window.location.href = "abk.html";
+  } 
+  else if (data.role === "KAPTEN") {
+    window.location.href = "kapten.html";
+  } 
+  else if (data.role === "ENGINE") {
+    window.location.href = "engine.html";
+  } 
+  else if (data.role === "ADMIN") {
+    window.location.href = "admin.html";
+  } 
+  else if (data.role === "OWNER" || data.role === "SUPERADMIN") {
+    window.location.href = "owner.html";
+  }
     } else {
       alert("Login gagal");
     }
@@ -31,5 +48,6 @@ function login() {
   });
 }
 </script>
+
 
 
