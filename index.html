@@ -1,37 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <title>ACHI Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box {
+      background: #020617;
+      padding: 25px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 0 20px rgba(0,0,0,.6);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #38bdf8;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+    input {
+      background: #1e293b;
+      color: white;
+    }
+    button {
+      background: #38bdf8;
+      color: #020617;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0ea5e9;
+    }
+    .status {
+      text-align: center;
+      font-size: 14px;
+      min-height: 18px;
+    }
+  </style>
 </head>
 <body>
 
-<h2>ACHI Login</h2>
+<div class="login-box">
+  <h2>ACHI LOGIN</h2>
 
-<input id="username" placeholder="Username"><br><br>
-<input id="password" type="password" placeholder="Password"><br><br>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
 
-<button onclick="login()">Login</button>
+  <button onclick="login()">LOGIN</button>
+  <div class="status" id="status"></div>
+</div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwY2c8vdGMHbXLdrjKXrDTDHNbWhO68EaiVlK3GcGOXvNilFcYMQEoSEhgbbd456nre/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycby_b4fYF2fCP6vwKzCEIWpHbfTd472de9cJVWx-ulrVOBG2aU4Jixj1YWLiTdhiWcUC/exec";
 
 function login() {
-  const u = document.getElementById("username").value;
-  const p = document.getElementById("password").value;
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
+  const status = document.getElementById("status");
 
-  fetch(API_URL + "?username=" + u + "&password=" + p)
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      alert(JSON.stringify(d));
+  status.innerText = "Menghubungkan...";
+
+  fetch(`${API_URL}?username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        localStorage.setItem("achi_login", "true");
+        localStorage.setItem("achi_user", data.username);
+        localStorage.setItem("achi_role", data.role);
+        localStorage.setItem("achi_kapal", data.kapal);
+        localStorage.setItem("achi_nama", data.nama);
+
+        status.innerText = "Login berhasil...";
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 600);
+      } else {
+        status.innerText = "Username / Password salah";
+      }
     })
-    .catch(function(e) {
-      alert("ERROR FETCH");
+    .catch(() => {
+      status.innerText = "Gagal koneksi ke server";
     });
 }
 </script>
 
-
 </body>
 </html>
-
