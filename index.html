@@ -1,52 +1,11 @@
-<script>
-function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
-  fetch("https://script.google.com/macros/s/AKfycbwIL7WUGxGAMpxAdxYZNUYkIryHMDj4bEoM6zZWcv9bpzRR3SjabeuOxqvqwWLt9GhE/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ username, password })
-  })
-  .then(res => res.json())
-  .then(data => {
-
-    console.log("DATA DARI SERVER:", data);
-
-    if (data.status === "success") {
-
-      const role = data.role.toString().trim().toUpperCase();
-
-      localStorage.setItem("achi_login", "true");
-      localStorage.setItem("achi_role", role);
-      localStorage.setItem("achi_nama", data.nama || "");
-      localStorage.setItem("achi_kapal", data.kapal || "");
-
-      if (role === "ABK") {
-        window.location.href = "abk.html";
-      } 
-      else if (role === "KAPTEN") {
-        window.location.href = "kapten.html";
-      } 
-      else if (role === "ENGINE") {
-        window.location.href = "engine.html";
-      } 
-      else if (role === "ADMIN") {
-        window.location.href = "admin.html";
-      } 
-      else if (role === "OWNER" || role === "SUPERADMIN") {
-        window.location.href = "owner.html";
-      } 
-      else {
-        alert("ROLE TIDAK DIKENALI: " + role);
-      }
-
-    } else {
-      alert("Login gagal");
-    }
-  })
-  .catch(err => alert("ERROR: " + err));
-}
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ACHI</title>
+</head>
+<body>
+  <h1>ACHI HIDUP</h1>
+  <p>Jika ini muncul, GitHub Pages normal.</p>
+</body>
+</html>
