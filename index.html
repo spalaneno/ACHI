@@ -17,9 +17,27 @@
 
 <script>
 function login() {
-  document.getElementById("msg").innerText = "Tombol login ditekan";
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  fetch("https://script.google.com/macros/s/AKfycbwIL7WUGxGAMpxAdxYZNUYkIryHMDj4bEoM6zZWcv9bpzRR3SjabeuOxqvqwWLt9GhE/exec", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById("msg").innerText =
+      JSON.stringify(d);
+  })
+  .catch(e => {
+    document.getElementById("msg").innerText =
+      "ERROR: " + e;
+  });
 }
 </script>
 
+
 </body>
 </html>
+
