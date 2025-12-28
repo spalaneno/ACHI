@@ -3,34 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ACHI</title>
+  <title>Login ACHI</title>
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2563eb">
-
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
 </head>
 
-<body class="bg-slate-100">
+<body class="bg-slate-100 flex items-center justify-center h-screen">
 
-  <header class="bg-blue-600 text-white p-4 text-center">
-    <h1 class="text-xl font-bold">ACHI</h1>
-    <p class="text-sm">Crewing & Handling Integrasi</p>
-  </header>
+  <div class="bg-white p-6 rounded-2xl shadow w-80">
+    <h1 class="text-xl font-bold text-center mb-4">ACHI LOGIN</h1>
 
-  <main class="p-4">
-    <div class="bg-white rounded-xl shadow p-4 text-center">
-      <p>ACHI siap dijadikan APK 🚀</p>
-    </div>
-  </main>
+    <input id="username" type="text" placeholder="Username"
+      class="w-full mb-3 p-2 border rounded">
+
+    <input id="password" type="password" placeholder="Password"
+      class="w-full mb-4 p-2 border rounded">
+
+    <button onclick="login()"
+      class="w-full bg-blue-600 text-white py-2 rounded">
+      Login
+    </button>
+
+    <p id="msg" class="text-center text-red-500 mt-3 text-sm"></p>
+  </div>
+
+<script>
+function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  fetch('PASTE_URL_WEB_APP', {
+    method: 'POST',
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'success') {
+      alert('Login berhasil sebagai ' + data.role);
+    } else {
+      document.getElementById('msg').innerText = 'Login gagal';
+    }
+  });
+}
+</script>
 
 </body>
 </html>
