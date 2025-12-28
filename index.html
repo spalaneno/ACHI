@@ -2,15 +2,22 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ACHI TEST</title>
+  <title>ACHI Login</title>
 </head>
 <body>
 
-<h1>ACHI HIDUP</h1>
+<h2>ACHI Login</h2>
 
-<p>Jika teks ini muncul, berarti HTML TERLOAD.</p>
+<input id="username" placeholder="Username"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
 
-<button onclick="alert('JS HIDUP')">Tes JS</button>
+<button onclick="login()">Login</button>
+
+<script>
+function login() {
+  alert("Username: " + document.getElementById("username").value);
+}
+</script>
 
 </body>
 </html>
