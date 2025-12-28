@@ -1,125 +1,26 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ACHI</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f2f4f7;
-    }
-    header {
-      background: #2563eb;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    .card {
-      max-width: 360px;
-      margin: 40px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,.1);
-    }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 12px;
-      font-size: 16px;
-    }
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:active {
-      transform: scale(.98);
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
-</head>
-
-<body>
-
-<header>
-  <h1>ACHI</h1>
-  <p>Crewing & Handling Integrasi</p>
-</header>
-
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-  <h3>Login ACHI</h3>
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-</div>
-
-<!-- DASHBOARD -->
-<div class="card hidden" id="dashboard">
-  <h3>Dashboard</h3>
-  <p id="welcome"></p>
-  <button onclick="logout()">Logout</button>
-</div>
-
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbxF3JU-5pAmp2dWz0fsq6Z2oXA0PnYB5ZjqVD05NXw/dev";
+const API_URL = "https://script.google.com/macros/s/AKfycbxyEBbxcjL7YDEgQF85rDe7Ocz59_kuQXjD9Z7bo6BFbzGSPbeps0qwFAKhvDPzCz-G/exec";
 
-  function login() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+function login() {
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
 
-    if (!username || !password) {
-      alert("Username dan password wajib diisi");
-      return;
-    }
-
-    fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    })
+  fetch(`${API_URL}?username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}`)
     .then(res => res.json())
     .then(data => {
       if (data.status === "success") {
         localStorage.setItem("achi_login", "true");
         localStorage.setItem("achi_role", data.role);
         localStorage.setItem("achi_user", data.username);
-        showDashboard();
+
+        alert("Login berhasil sebagai " + data.role);
+
+        // redirect contoh
+        window.location.href = "dashboard.html";
       } else {
-        alert("Login gagal");
+        alert("Login gagal, cek username/password");
       }
     })
-    .catch(err => {
-      alert("Gagal koneksi server");
-      console.error(err);
-    });
-  }
-
-  function showDashboard() {
-    document.getElementById("loginBox").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-    document.getElementById("welcome").innerText =
-      "Login berhasil sebagai " + localStorage.getItem("achi_role");
-  }
-
-  function logout() {
-    localStorage.clear();
-    location.reload();
-  }
-
-  if (localStorage.getItem("achi_login") === "true") {
-    showDashboard();
-  }
+    .catch(() => alert("Gagal koneksi ke server"));
+}
 </script>
-
-</body>
-</html>
-
