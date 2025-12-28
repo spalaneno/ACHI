@@ -2,10 +2,24 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ACHI</title>
+  <title>ACHI Login</title>
 </head>
 <body>
-  <h1>ACHI HIDUP</h1>
-  <p>Jika ini muncul, GitHub Pages normal.</p>
+
+<h2>Login ACHI</h2>
+
+<input id="username" placeholder="Username"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
+
+<button onclick="login()">Login</button>
+
+<p id="msg"></p>
+
+<script>
+function login() {
+  document.getElementById("msg").innerText = "Tombol login ditekan";
+}
+</script>
+
 </body>
 </html>
