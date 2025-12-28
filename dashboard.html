@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard ACHI</title>
+</head>
+<body>
+
+<h2 id="welcome"></h2>
+<div id="menu"></div>
+
+<script>
+if (!localStorage.getItem("achi_login")) {
+  location.href = "index.html";
+}
+
+const role = localStorage.getItem("achi_role");
+const nama = localStorage.getItem("achi_nama");
+const kapal = localStorage.getItem("achi_kapal");
+
+document.getElementById("welcome").innerText =
+  `Selamat datang ${nama} (${role}) - ${kapal}`;
+
+let menu = "";
+
+if (role === "ABK") {
+  menu = `
+    <ul>
+      <li>Saldo & Gaji</li>
+      <li>Riwayat Pengambilan</li>
+    </ul>`;
+}
+
+if (role === "KAPTEN") {
+  menu = `
+    <ul>
+      <li>Permintaan Anfrakan Kapal</li>
+      <li>Saldo Awak Kapal</li>
+    </ul>`;
+}
+
+if (role === "CHIEF_ENGINE") {
+  menu = `
+    <ul>
+      <li>Anfrakan Mesin</li>
+      <li>Laporan Solar & Oli</li>
+    </ul>`;
+}
+
+if (role === "ADMIN") {
+  menu = `
+    <ul>
+      <li>Approval Anfrakan</li>
+      <li>Stok Kapal</li>
+    </ul>`;
+}
+
+if (role === "OWNER" || role === "SUPER_ADMIN") {
+  menu = `
+    <ul>
+      <li>Semua Data Kapal</li>
+      <li>Approval Final</li>
+      <li>Laporan Keuangan</li>
+    </ul>`;
+}
+
+document.getElementById("menu").innerHTML = menu;
+</script>
+
+</body>
+</html>
