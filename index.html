@@ -8,46 +8,45 @@ function login() {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
+    body: JSON.stringify({ username, password })
   })
-  .then(response => response.json())
+  .then(res => res.json())
   .then(data => {
-    console.log(data);
 
- if (data.status === "success") {
+    console.log("DATA DARI SERVER:", data);
 
-  localStorage.setItem("achi_login", "true");
-  localStorage.setItem("achi_role", data.role);
-  localStorage.setItem("achi_nama", data.nama);
-  localStorage.setItem("achi_kapal", data.kapal);
+    if (data.status === "success") {
 
-  if (data.role === "ABK") {
-    window.location.href = "abk.html";
-  } 
-  else if (data.role === "KAPTEN") {
-    window.location.href = "kapten.html";
-  } 
-  else if (data.role === "ENGINE") {
-    window.location.href = "engine.html";
-  } 
-  else if (data.role === "ADMIN") {
-    window.location.href = "admin.html";
-  } 
-  else if (data.role === "OWNER" || data.role === "SUPERADMIN") {
-    window.location.href = "owner.html";
-  }
+      const role = data.role.toString().trim().toUpperCase();
+
+      localStorage.setItem("achi_login", "true");
+      localStorage.setItem("achi_role", role);
+      localStorage.setItem("achi_nama", data.nama || "");
+      localStorage.setItem("achi_kapal", data.kapal || "");
+
+      if (role === "ABK") {
+        window.location.href = "abk.html";
+      } 
+      else if (role === "KAPTEN") {
+        window.location.href = "kapten.html";
+      } 
+      else if (role === "ENGINE") {
+        window.location.href = "engine.html";
+      } 
+      else if (role === "ADMIN") {
+        window.location.href = "admin.html";
+      } 
+      else if (role === "OWNER" || role === "SUPERADMIN") {
+        window.location.href = "owner.html";
+      } 
+      else {
+        alert("ROLE TIDAK DIKENALI: " + role);
+      }
+
     } else {
       alert("Login gagal");
     }
   })
-  .catch(err => {
-    alert("ERROR: " + err);
-  });
+  .catch(err => alert("ERROR: " + err));
 }
 </script>
-
-
-
