@@ -1,16 +1,15 @@
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwY2c8vdGMHbXLdrjKXrDTDHNbWhO68EaiVlK3GcGOXvNilFcYMQEoSEhgbbd456nre/exec";
 
-<script>
-const API_URL = "PASTE_URL_EXEC_BARU";
-
 function login() {
   const u = document.getElementById("username").value.trim();
   const p = document.getElementById("password").value.trim();
 
-  fetch(`${API_URL}?username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}`)
-    .then(res => res.json())
-    .then(data => {
+  fetch(API_URL + "?username=" + encodeURIComponent(u) + "&password=" + encodeURIComponent(p))
+    .then(function(res) {
+      return res.json();
+    })
+    .then(function(data) {
       if (data.status === "success") {
         localStorage.setItem("achi_login", "true");
         localStorage.setItem("achi_user", data.username);
@@ -24,9 +23,8 @@ function login() {
         alert("Login gagal");
       }
     })
-    .catch(() => alert("Koneksi gagal"));
+    .catch(function() {
+      alert("Koneksi gagal");
+    });
 }
 </script>
-
-
-
