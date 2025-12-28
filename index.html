@@ -14,10 +14,24 @@
 <button onclick="login()">Login</button>
 
 <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwY2c8vdGMHbXLdrjKXrDTDHNbWhO68EaiVlK3GcGOXvNilFcYMQEoSEhgbbd456nre/exec";
+
 function login() {
-  alert("Username: " + document.getElementById("username").value);
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
+
+  fetch(API_URL + "?username=" + u + "&password=" + p)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      alert(JSON.stringify(d));
+    })
+    .catch(function(e) {
+      alert("ERROR FETCH");
+    });
 }
 </script>
 
+
 </body>
 </html>
+
