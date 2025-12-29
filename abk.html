@@ -1,7 +1,8 @@
-<!DOCTYPE html>
-<html>
-<body>
-<h2>Dashboard ABK</h2>
-<p>Saldo, hutang, gaji akan tampil di sini</p>
-</body>
-</html>
+<h2>ABK DASHBOARD</h2>
+<p id="info"></p>
+
+<script>
+document.getElementById("info").innerText =
+  localStorage.getItem("achi_nama") + 
+  " - " + localStorage.getItem("achi_kapal");
+</script>
