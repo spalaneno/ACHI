@@ -107,7 +107,12 @@ function login() {
 
         status.innerText = "Login berhasil...";
         setTimeout(() => {
-          window.location.href = "dashboard.html";
+      if (data.role === "ABK") window.location.href = "abk.html";
+else if (data.role === "KAPTEN") window.location.href = "kapten.html";
+else if (data.role === "CHIEF") window.location.href = "engine.html";
+else if (data.role === "ADMIN") window.location.href = "admin.html";
+else if (data.role === "OWNER") window.location.href = "owner.html";
+
         }, 600);
       } else {
         status.innerText = "Username / Password salah";
@@ -121,6 +126,7 @@ function login() {
 
 </body>
 </html>
+
 
 
 
