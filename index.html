@@ -1,37 +1,77 @@
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycby_b4fYF2fCP6vwKzCEIWpHbfTd472de9cJVWx-ulrVOBG2aU4Jixj1YWLiTdhiWcUC/exec";
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #000000, #0f0f0f);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-function login() {
-  const u = document.getElementById("username").value.trim();
-  const p = document.getElementById("password").value.trim();
-  const status = document.getElementById("status");
+    .login-box {
+      background: #111111;
+      padding: 26px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 0 25px rgba(0,0,0,.8);
+      border: 1px solid #2a2a2a;
+    }
 
-  status.innerText = "Menghubungkan...";
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      border: 1px solid #2a2a2a;
+      background: #000000;
+      color: white;
+      font-size: 16px;
+    }
 
-  fetch(`${API_URL}?username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === "success") {
-        localStorage.setItem("achi_login", "true");
-        localStorage.setItem("achi_user", data.username);
-        localStorage.setItem("achi_role", data.role);
-        localStorage.setItem("achi_kapal", data.kapal);
-        localStorage.setItem("achi_nama", data.nama);
+    input::placeholder {
+      color: #888;
+    }
 
-        status.innerText = "Login berhasil...";
-        setTimeout(() => {
-          if (data.role === "ABK") window.location.href = "abk.html";
-          else if (data.role === "KAPTEN") window.location.href = "kapten.html";
-          else if (data.role === "CHIEF") window.location.href = "engine.html";
-          else if (data.role === "ADMIN") window.location.href = "admin.html";
-          else if (data.role === "OWNER") window.location.href = "owner.html";
-        }, 600);
-      } else {
-        status.innerText = "Username / Password salah";
-      }
-    })
-    .catch(() => {
-      status.innerText = "Gagal koneksi ke server";
-    });
-}
-</script>
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, #b91c1c, #dc2626);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+    }
+
+    .status {
+      text-align: center;
+      font-size: 14px;
+      min-height: 18px;
+      margin-top: 8px;
+      color: #fca5a5;
+    }
+
+    h2 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <!-- LOGO + JUDUL -->
+  <div style="text-align:cent
