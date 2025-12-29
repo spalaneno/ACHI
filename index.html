@@ -5,10 +5,10 @@
   <title>Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  /* --- BODY --- */
+  /* BODY */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(180deg, #000000, #0f0f0f);
+    background: linear-gradient(180deg, #0d0d0d, #1a1a1a);
     color: white;
     display: flex;
     justify-content: center;
@@ -17,53 +17,45 @@
     margin: 0;
   }
 
-  /* --- LOGIN BOX --- */
+  /* LOGIN BOX */
   .login-box {
-    background: linear-gradient(145deg, #1a1a1a, #111);
-    padding: 32px 28px;
+    background: #111;
+    padding: 36px 32px;
     border-radius: 16px;
     width: 100%;
     max-width: 380px;
-    box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
-    border: 1px solid #2a2a2a;
     text-align: center;
-    animation: fadeIn 0.8s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px);}
-    to { opacity: 1; transform: translateY(0);}
-  }
-
-  /* --- LOGO & JUDUL --- */
+  /* LOGO & JUDUL */
   .login-logo {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 16px; /* Lebih rapat */
+    margin-bottom: 12px;
   }
 
   .login-logo img {
     width: 160px;
-    margin-bottom: 8px; /* Dekatkan tulisan ke logo */
+    margin-bottom: 8px;
   }
 
   .login-logo span {
     font-size: 14px;
-    color: #f87171; /* merah muda kekinian */
+    color: #f87171; /* merah lembut */
     font-weight: 500;
   }
 
-  /* --- JUDUL LOGIN --- */
+  /* LOGIN TITLE */
   h2 {
     font-size: 24px;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     font-weight: bold;
-    letter-spacing: 1px;
     color: #ef4444;
   }
 
-  /* --- INPUT --- */
+  /* INPUT */
   input {
     width: 100%;
     padding: 14px;
@@ -77,16 +69,16 @@
   }
 
   input:focus {
-    border: 1px solid #ef4444;
+    border-color: #dc2626;
+    box-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
     outline: none;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
   }
 
   input::placeholder {
     color: #888;
   }
 
-  /* --- BUTTON --- */
+  /* BUTTON */
   button {
     width: 100%;
     padding: 15px;
@@ -98,21 +90,20 @@
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
   }
 
   button:hover {
-    background: linear-gradient(135deg, #dc2626, #f87171);
-    box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+    background: linear-gradient(135deg, #dc2626, #ef4444);
   }
 
-  /* --- STATUS --- */
+  /* STATUS */
   .status {
     text-align: center;
     font-size: 14px;
     min-height: 18px;
     margin-top: 12px;
     color: #fca5a5;
-    transition: 0.3s;
   }
 </style>
 </head>
@@ -154,28 +145,4 @@ function login() {
     .then(data => {
       if (data.status === "success") {
         localStorage.setItem("achi_login", "true");
-        localStorage.setItem("achi_user", data.username);
-        localStorage.setItem("achi_role", data.role);
-        localStorage.setItem("achi_kapal", data.kapal);
-        localStorage.setItem("achi_nama", data.nama);
-
-        status.innerText = "Login berhasil...";
-        setTimeout(() => {
-          if (data.role === "ABK") window.location.href = "abk.html";
-          else if (data.role === "KAPTEN") window.location.href = "kapten.html";
-          else if (data.role === "CHIEF") window.location.href = "engine.html";
-          else if (data.role === "ADMIN") window.location.href = "admin.html";
-          else if (data.role === "OWNER") window.location.href = "owner.html";
-        }, 600);
-      } else {
-        status.innerText = "Username / Password salah";
-      }
-    })
-    .catch(() => {
-      status.innerText = "Gagal koneksi ke server";
-    });
-}
-</script>
-
-</body>
-</html>
+        localStorage.setItem("achi_user", d_
