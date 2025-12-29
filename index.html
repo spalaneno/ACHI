@@ -5,8 +5,9 @@
   <title>Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+  /* --- BODY --- */
   body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(180deg, #000000, #0f0f0f);
     color: white;
     display: flex;
@@ -16,72 +17,125 @@
     margin: 0;
   }
 
+  /* --- LOGIN BOX --- */
   .login-box {
-    background: #111111;
-    padding: 26px;
-    border-radius: 14px;
+    background: linear-gradient(145deg, #1a1a1a, #111);
+    padding: 32px 28px;
+    border-radius: 16px;
     width: 100%;
-    max-width: 360px;
-    box-shadow: 0 0 25px rgba(0,0,0,.8);
+    max-width: 380px;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
     border: 1px solid #2a2a2a;
+    text-align: center;
+    animation: fadeIn 0.8s ease;
   }
 
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px);}
+    to { opacity: 1; transform: translateY(0);}
+  }
+
+  /* --- LOGO & JUDUL --- */
+  .login-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 16px; /* Lebih rapat */
+  }
+
+  .login-logo img {
+    width: 160px;
+    margin-bottom: 8px; /* Dekatkan tulisan ke logo */
+  }
+
+  .login-logo span {
+    font-size: 14px;
+    color: #f87171; /* merah muda kekinian */
+    font-weight: 500;
+  }
+
+  /* --- JUDUL LOGIN --- */
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #ef4444;
+  }
+
+  /* --- INPUT --- */
   input {
     width: 100%;
-    padding: 13px;
-    margin-bottom: 14px;
-    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 16px;
+    border-radius: 12px;
     border: 1px solid #2a2a2a;
-    background: #000000;
+    background: #111;
     color: white;
     font-size: 16px;
+    transition: 0.3s;
+  }
+
+  input:focus {
+    border: 1px solid #ef4444;
+    outline: none;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
   }
 
   input::placeholder {
     color: #888;
   }
 
+  /* --- BUTTON --- */
   button {
     width: 100%;
-    padding: 14px;
-    border-radius: 10px;
+    padding: 15px;
+    border-radius: 12px;
     border: none;
     background: linear-gradient(135deg, #b91c1c, #dc2626);
     color: white;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
   }
 
   button:hover {
-    background: linear-gradient(135deg, #dc2626, #ef4444);
+    background: linear-gradient(135deg, #dc2626, #f87171);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
   }
 
+  /* --- STATUS --- */
   .status {
     text-align: center;
     font-size: 14px;
     min-height: 18px;
-    margin-top: 8px;
+    margin-top: 12px;
     color: #fca5a5;
+    transition: 0.3s;
   }
 </style>
 </head>
 <body>
 
 <div class="login-box">
- <!-- LOGO + JUDUL -->
-<div style="text-align:center;margin-bottom:20px;">
-  <img src="logo.png" style="width:180px;margin-bottom:20px;">
-  <div style="style="text-align:center;font-size:13px;color:#94a3b8;margin-top:4px;">
-    Aplikasi Crewing & Handling Integrasi
+  <!-- LOGO + JUDUL -->
+  <div class="login-logo">
+    <img src="logo.png" alt="Logo">
+    <span>Aplikasi Crewing & Handling Integrasi</span>
   </div>
-</div>
+
+  <!-- LOGIN TITLE -->
   <h2>LOGIN</h2>
 
+  <!-- INPUT -->
   <input type="text" id="username" placeholder="Username">
   <input type="password" id="password" placeholder="Password">
 
+  <!-- BUTTON -->
   <button onclick="login()">LOGIN</button>
+
+  <!-- STATUS -->
   <div class="status" id="status"></div>
 </div>
 
@@ -107,12 +161,11 @@ function login() {
 
         status.innerText = "Login berhasil...";
         setTimeout(() => {
-      if (data.role === "ABK") window.location.href = "abk.html";
-else if (data.role === "KAPTEN") window.location.href = "kapten.html";
-else if (data.role === "CHIEF") window.location.href = "engine.html";
-else if (data.role === "ADMIN") window.location.href = "admin.html";
-else if (data.role === "OWNER") window.location.href = "owner.html";
-
+          if (data.role === "ABK") window.location.href = "abk.html";
+          else if (data.role === "KAPTEN") window.location.href = "kapten.html";
+          else if (data.role === "CHIEF") window.location.href = "engine.html";
+          else if (data.role === "ADMIN") window.location.href = "admin.html";
+          else if (data.role === "OWNER") window.location.href = "owner.html";
         }, 600);
       } else {
         status.innerText = "Username / Password salah";
@@ -126,20 +179,3 @@ else if (data.role === "OWNER") window.location.href = "owner.html";
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
