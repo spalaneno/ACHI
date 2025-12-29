@@ -64,14 +64,66 @@
       margin-top: 8px;
       color: #fca5a5;
     }
-
-    h2 {
-      text-align: center;
-    }
   </style>
 </head>
 <body>
 
-<div class="login-box">
-  <!-- LOGO + JUDUL -->
-  <div style="text-align:cent
+  <div class="login-box">
+    <!-- LOGO + JUDUL -->
+    <div style="text-align:center;margin-bottom:20px;">
+      <img src="logo.png" style="width:180px;margin-bottom:20px;">
+      <div style="text-align:center;font-size:13px;color:#94a3b8;margin-top:4px;">
+        Aplikasi Crewing & Handling Integrasi
+      </div>
+    </div>
+
+    <h2>LOGIN</h2>
+
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">LOGIN</button>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycby_b4fYF2fCP6vwKzCEIWpHbfTd472de9cJVWx-ulrVOBG2aU4Jixj1YWLiTdhiWcUC/exec";
+
+    function login() {
+      const u = document.getElementById("username").value.trim();
+      const p = document.getElementById("password").value.trim();
+      const status = document.getElementById("status");
+
+      status.innerText = "Menghubungkan...";
+
+      fetch(`${API_URL}?username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            localStorage.setItem("achi_login", "true");
+            localStorage.setItem("achi_user", data.username);
+            localStorage.setItem("achi_role", data.role);
+            localStorage.setItem("achi_kapal", data.kapal);
+            localStorage.setItem("achi_nama", data.nama);
+
+            status.innerText = "Login berhasil...";
+            setTimeout(() => {
+              if (data.role === "ABK") window.location.href = "abk.html";
+              else if (data.role === "KAPTEN") window.location.href = "kapten.html";
+              else if (data.role === "CHIEF") window.location.href = "engine.html";
+              else if (data.role === "ADMIN") window.location.href = "admin.html";
+              else if (data.role === "OWNER") window.location.href = "owner.html";
+            }, 600);
+          } else {
+            status.innerText = "Username / Password salah";
+          }
+        })
+        .catch(() => {
+          status.innerText = "Gagal koneksi ke server";
+        });
+    }
+  </script>
+
+</body>
+</html>
