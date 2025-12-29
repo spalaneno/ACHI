@@ -26,26 +26,24 @@ function kirimAnfrakan() {
   const keterangan = document.getElementById("keterangan").value;
   const nominal = document.getElementById("nominal").value;
 
-  fetch(API_URL, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      action: "addAnfrakanKapal",
-      username: localStorage.getItem("achi_user"),
-      kapal: localStorage.getItem("achi_kapal"),
-      keterangan: keterangan,
-      nominal: nominal
-    })
+ fetch(API_URL, {
+  method: "POST",
+  body: JSON.stringify({
+    action: "addAnfrakanKapal",
+    username: localStorage.getItem("achi_user"),
+    kapal: localStorage.getItem("achi_kapal"),
+    keterangan: document.getElementById("keterangan").value,
+    nominal: document.getElementById("nominal").value
   })
-  .then(res => res.json())
-  .then(r => {
-    if (r.status === "success") {
-      alert("Anfrakan berhasil dikirim");
-      document.getElementById("keterangan").value = "";
-      document.getElementById("nominal").value = "";
-    } else {
-      alert("Gagal kirim");
-    }
+})
+.then(res => res.json())
+.then(r => {
+  alert(JSON.stringify(r));
+})
+.catch(err => {
+  alert("ERROR FETCH: " + err);
+});
+
   })
   .catch(() => alert("Koneksi gagal"));
 }
