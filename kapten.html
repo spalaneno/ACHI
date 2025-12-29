@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Anfrakan Kapten</title>
+</head>
+<body>
+
+<h2>Form Anfrakan Kapal</h2>
+
+<p id="info"></p>
+
+<input type="text" id="keterangan" placeholder="Keterangan anfrakan"><br><br>
+<input type="number" id="nominal" placeholder="Nominal"><br><br>
+
+<button onclick="kirimAnfrakan()">Kirim Anfrakan</button>
+
+<script>
+const API_URL = "PASTE_URL_EXEC_KAMU";
+
+document.getElementById("info").innerText =
+  localStorage.getItem("achi_nama") + " - " +
+  localStorage.getItem("achi_kapal");
+
+function kirimAnfrakan() {
+  const keterangan = document.getElementById("keterangan").value;
+  const nominal = document.getElementById("nominal").value;
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      action: "addAnfrakanKapal",
+      username: localStorage.getItem("achi_user"),
+      kapal: localStorage.getItem("achi_kapal"),
+      keterangan: keterangan,
+      nominal: nominal
+    })
+  })
+  .then(res => res.json())
+  .then(r => {
+    if (r.status === "success") {
+      alert("Anfrakan berhasil dikirim");
+      document.getElementById("keterangan").value = "";
+      document.getElementById("nominal").value = "";
+    } else {
+      alert("Gagal kirim");
+    }
+  })
+  .catch(() => alert("Koneksi gagal"));
+}
+</script>
+
+</body>
+</html>
