@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Approval - ACHI</title>
+<style>
+body { font-family: Arial; background:#111; color:#fff; padding:20px; }
+table { width:100%; border-collapse:collapse; }
+th,td { border:1px solid #444; padding:8px; }
+th { background:#b91c1c; }
+button { padding:6px 10px; margin:2px; cursor:pointer; }
+.approve { background:#16a34a; color:#fff; }
+.reject { background:#dc2626; color:#fff; }
+</style>
+</head>
+<body>
+
+<h2>ADMIN – APPROVAL ANFRAKAN</h2>
+
+<table id="tbl">
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Kapal</th>
+<th>User</th>
+<th>Keterangan</th>
+<th>Nominal</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<script>
+const API_URL = "PASTE_URL_DEPLOY_TERBARU";
+
+function loadData(){
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ action:"getAnfrakanPending" })
+  })
+  .then(r=>r.json())
+  .then(j=>{
+    const tb=document.querySelector("#tbl tbody");
+    tb.innerHTML="";
+    j.data.forEach(x=>{
+      tb.innerHTML+=`
+        <tr>
+          <td>${x.tanggal}</td>
+          <td>${x.kapal}</td>
+          <td>${x.username}</td>
+          <td>${x.keterangan}</td>
+          <td>${x.nominal}</td>
+          <td>
+            <button class="approve" onclick="aksi(${x.row},'APPROVED')">Approve</button>
+            <button class="reject" onclick="aksi(${x.row},'REJECTED')">Reject</button>
+          </td>
+        </tr>`;
+    });
+  });
+}
+
+function aksi(row,status){
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      action:"approveAnfrakan",
+      row:row,
+      status:status,
+      admin: localStorage.getItem("achi_user")
+    })
+  })
+  .then(r=>r.json())
+  .then(()=>loadData());
+}
+
+loadData();
+</script>
+
+</body>
+</html>
