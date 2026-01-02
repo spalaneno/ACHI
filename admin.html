@@ -2,175 +2,135 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>ADMIN APPROVAL - ACHI</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACHI - Admin Approval</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
     body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #0b0b0b;
-      color: #ffffff;
+      padding: 20px;
     }
 
-    header {
-      background: #b91c1c;
-      padding: 16px;
+    h2 {
       text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .container {
-      padding: 16px;
+      margin-bottom: 20px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+      font-size: 14px;
     }
 
     th {
-      background: #1f1f1f;
-      padding: 10px;
-      font-size: 14px;
-      border-bottom: 2px solid #b91c1c;
+      background: #222;
+      color: white;
     }
 
-    td {
-      padding: 10px;
-      font-size: 13px;
-      border-bottom: 1px solid #333;
-      text-align: center;
-    }
-
-    tr:hover {
-      background: #181818;
-    }
-
-    .btn {
-      padding: 6px 12px;
-      border-radius: 4px;
+    button {
+      padding: 6px 10px;
       border: none;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 13px;
+      border-radius: 4px;
     }
 
-    .btn-approve {
-      background: #16a34a;
-      color: #fff;
+    .approve {
+      background: #2ecc71;
+      color: white;
     }
 
-    .btn-approve:hover {
-      background: #15803d;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 20px;
-      color: #aaa;
+    .reject {
+      background: #e74c3c;
+      color: white;
     }
 
     .loading {
       text-align: center;
-      margin-top: 20px;
-      color: #ccc;
+      margin-top: 30px;
+      font-style: italic;
     }
   </style>
 </head>
-
 <body>
 
-<header>
-  ADMIN – APPROVAL ANFRAKAN
-</header>
+<h2>ADMIN APPROVAL ANFRAKAN</h2>
 
-<div class="container">
+<div id="loading" class="loading">Memuat data...</div>
 
-  <div id="loading" class="loading">Memuat data...</div>
-
-  <table id="tabel" style="display:none;">
-    <thead>
-      <tr>
-        <th>Tanggal</th>
-        <th>Kapal</th>
-        <th>User</th>
-        <th>Keterangan</th>
-        <th>Nominal</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-</div>
+<table id="table" style="display:none;">
+  <thead>
+    <tr>
+      <th>Tanggal</th>
+      <th>Kapal</th>
+      <th>User</th>
+      <th>Keterangan</th>
+      <th>Nominal</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody id="data"></tbody>
+</table>
 
 <script>
-/* ===============================
-   KONFIGURASI
-================================ */
-const API_URL = "https://script.google.com/macros/s/AKfycbz8SFDGnETcYnhZmjs5cxl0zUnzLZqU5Wccua33-0KrobFnM0fnSkxUoBSQ_8xRQK3e/exec";
+const API_URL = "PASTE_URL_EXEC_KAMU_DI_SINI";
 
-/* ===============================
-   LOAD DATA PENDING
-================================ */
+// ==========================
+// LOAD DATA
+// ==========================
 function loadData() {
-  fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "getAnfrakanPending"
+  fetch(API_URL + "?action=getPendingAnfrakan")
+    .then(res => res.json())
+    .then(json => {
+      document.getElementById("loading").style.display = "none";
+
+      if (json.status !== "success" || json.data.length === 0) {
+        document.getElementById("loading").innerText = "Tidak ada anfrakan pending";
+        document.getElementById("loading").style.display = "block";
+        return;
+      }
+
+      document.getElementById("table").style.display = "table";
+
+      const tbody = document.getElementById("data");
+      tbody.innerHTML = "";
+
+      json.data.forEach(item => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${new Date(item.tanggal).toLocaleDateString()}</td>
+          <td>${item.kapal}</td>
+          <td>${item.username}</td>
+          <td>${item.keterangan}</td>
+          <td>Rp ${Number(item.nominal).toLocaleString()}</td>
+          <td>
+            <button class="approve" onclick="approve(${item.row})">Approve</button>
+            <button class="reject" onclick="reject(${item.row})">Reject</button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
     })
-  })
-  .then(res => res.json())
-  .then(res => {
-    const loading = document.getElementById("loading");
-    const table = document.getElementById("tabel");
-    const tbody = table.querySelector("tbody");
-
-    loading.style.display = "none";
-    tbody.innerHTML = "";
-
-    if (res.status !== "success" || res.data.length === 0) {
-      table.style.display = "table";
-      tbody.innerHTML =
-        "<tr><td colspan='6' class='empty'>Tidak ada anfrakan pending</td></tr>";
-      return;
-    }
-
-    table.style.display = "table";
-
-    res.data.forEach(item => {
-      const tr = document.createElement("tr");
-
-      tr.innerHTML = `
-        <td>${new Date(item.tanggal).toLocaleString()}</td>
-        <td>${item.kapal}</td>
-        <td>${item.username}</td>
-        <td>${item.keterangan}</td>
-        <td>${Number(item.nominal).toLocaleString()}</td>
-        <td>
-          <button class="btn btn-approve"
-            onclick="approve(${item.row})">
-            Approve
-          </button>
-        </td>
-      `;
-
-      tbody.appendChild(tr);
+    .catch(err => {
+      document.getElementById("loading").innerText = "Gagal memuat data";
+      console.error(err);
     });
-  })
-  .catch(err => {
-    document.getElementById("loading").innerText =
-      "Gagal memuat data: " + err;
-  });
 }
 
-/* ===============================
-   APPROVE ANFRAKAN
-================================ */
+// ==========================
+// APPROVE
+// ==========================
 function approve(row) {
   if (!confirm("Setujui anfrakan ini?")) return;
 
@@ -183,22 +143,36 @@ function approve(row) {
     })
   })
   .then(res => res.json())
-  .then(res => {
-    if (res.status === "success") {
-      alert("Anfrakan disetujui");
-      loadData();
-    } else {
-      alert("Gagal approve");
-    }
+  .then(() => {
+    alert("Anfrakan disetujui");
+    loadData();
   })
-  .catch(err => {
-    alert("Error koneksi: " + err);
-  });
+  .catch(() => alert("Koneksi gagal"));
 }
 
-/* ===============================
-   INIT
-================================ */
+// ==========================
+// REJECT
+// ==========================
+function reject(row) {
+  if (!confirm("Tolak anfrakan ini?")) return;
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "rejectAnfrakan",
+      row: row
+    })
+  })
+  .then(res => res.json())
+  .then(() => {
+    alert("Anfrakan ditolak");
+    loadData();
+  })
+  .catch(() => alert("Koneksi gagal"));
+}
+
+// LOAD SAAT HALAMAN DIBUKA
 loadData();
 </script>
 
