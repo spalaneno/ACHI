@@ -1,105 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <title>ADMIN – APPROVAL ANFRAKAN</title>
 
 <style>
 body {
-  background: #0e0e0e;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #111;
   color: #fff;
-  font-family: Arial;
 }
+
 header {
-  background: linear-gradient(90deg, #8b0000, #ff0000);
-  padding: 15px;
+  padding: 20px;
+  background: linear-gradient(90deg, #b30000, #000);
   text-align: center;
   font-size: 22px;
   font-weight: bold;
 }
-table {
-  width: 95%;
-  margin: 20px auto;
-  border-collapse: collapse;
+
+#list {
+  padding: 20px;
 }
-th, td {
-  border: 1px solid #444;
-  padding: 10px;
-  text-align: center;
+
+.card {
+  background: #1e1e1e;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 5px solid #b30000;
 }
-th {
-  background: #b30000;
-}
+
 button {
-  padding: 6px 10px;
-  margin: 2px;
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: #b30000;
+  border: none;
+  color: white;
   cursor: pointer;
 }
-.approve { background: green; color: #fff; }
-.reject { background: red; color: #fff; }
+
+button:hover {
+  background: #ff0000;
+}
 </style>
 </head>
 
 <body>
 
 <header>ADMIN – APPROVAL ANFRAKAN</header>
-
-<table>
-<thead>
-<tr>
-  <th>Tanggal</th>
-  <th>Kapal</th>
-  <th>User</th>
-  <th>Keterangan</th>
-  <th>Nominal</th>
-  <th>Aksi</th>
-</tr>
-</thead>
-<tbody id="data"></tbody>
-</table>
+<div id="list">Memuat data...</div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbxh4rEWK9NyUVOl6o7ndt8sGBxOG8mwFhrY6pz5xL9I5QM3-o1rh1Ina1OtuPmFpw50/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyB4pNGh2_PJ448-OeiC8DYwR6NyyXjrNw0KzYsctq9BAP8G7ILh-HpGW629u6qdehK/exec";
+// ↑ URL DARI ANDA – JANGAN DIUBAH
 
+fetch(API_URL + "?action=getPendingAnfrakan")
+  .then(res => res.json())
+  .then(res => {
+    if (!res.data || res.data.length === 0) {
+      document.getElementById("list").innerHTML =
+        "<p>Tidak ada anfrakan pending</p>";
+      return;
+    }
 
-fetch(API + "?action=getPendingAnfrakan")
-.then(r => r.json())
-.then(res => {
-  if (!res.data || res.data.length === 0) {
-    document.getElementById("data").innerHTML =
-      "<tr><td colspan='6'>Tidak ada anfrakan pending</td></tr>";
-    return;
-  }
+    let html = "";
+    res.data.forEach(item => {
+      html += `
+        <div class="card">
+          <b>${item.kapal}</b><br>
+          Keterangan: ${item.keterangan}<br>
+          Nominal: Rp ${item.nominal}<br>
+          User: ${item.username}<br>
+          <button onclick="approve(${item.row})">APPROVE</button>
+        </div>
+      `;
+    });
 
-  let html = "";
-  res.data.forEach(d => {
-    html += `
-      <tr>
-        <td>${d.tanggal}</td>
-        <td>${d.kapal}</td>
-        <td>${d.username}</td>
-        <td>${d.keterangan}</td>
-        <td>${d.nominal}</td>
-        <td>
-          <button class="approve" onclick="update(${d.row},'APPROVED')">✔</button>
-          <button class="reject" onclick="update(${d.row},'REJECTED')">✖</button>
-        </td>
-      </tr>`;
-  });
-  document.getElementById("data").innerHTML = html;
-});
-
-function update(row, status) {
-  fetch(API, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "updateStatus",
-      row: row,
-      status: status
-    })
+    document.getElementById("list").innerHTML = html;
   })
-  .then(r => r.json())
-  .then(() => location.reload());
+  .catch(() => {
+    document.getElementById("list").innerHTML = "Gagal memuat data";
+  });
+
+function approve(row) {
+  fetch(API_URL + "?action=approve&row=" + row + "&admin=ADMIN")
+    .then(res => res.json())
+    .then(() => location.reload());
 }
 </script>
 
