@@ -1,72 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>ADMIN - APPROVAL ANFRAKAN</title>
+  <title>ADMIN APPROVAL - ACHI</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
-      background: #0e0e0e;
-      color: white;
-      font-family: Arial, sans-serif;
-      padding: 20px;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b0b0b;
+      color: #ffffff;
     }
 
-    h2 {
+    header {
+      background: #b91c1c;
+      padding: 16px;
       text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 16px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 12px;
     }
 
     th {
-      background: #b71c1c;
+      background: #1f1f1f;
       padding: 10px;
+      font-size: 14px;
+      border-bottom: 2px solid #b91c1c;
     }
 
     td {
-      background: #1c1c1c;
-      padding: 8px;
+      padding: 10px;
+      font-size: 13px;
+      border-bottom: 1px solid #333;
       text-align: center;
     }
 
-    button {
-      background: green;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: 4px;
+    tr:hover {
+      background: #181818;
     }
 
-    button:hover {
-      background: darkgreen;
+    .btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .btn-approve {
+      background: #16a34a;
+      color: #fff;
+    }
+
+    .btn-approve:hover {
+      background: #15803d;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 20px;
+      color: #aaa;
+    }
+
+    .loading {
+      text-align: center;
+      margin-top: 20px;
+      color: #ccc;
     }
   </style>
 </head>
+
 <body>
 
-<h2>ADMIN – APPROVAL ANFRAKAN</h2>
+<header>
+  ADMIN – APPROVAL ANFRAKAN
+</header>
 
-<table id="tabel">
-  <thead>
-    <tr>
-      <th>Tanggal</th>
-      <th>Kapal</th>
-      <th>User</th>
-      <th>Keterangan</th>
-      <th>Nominal</th>
-      <th>Aksi</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<div class="container">
+
+  <div id="loading" class="loading">Memuat data...</div>
+
+  <table id="tabel" style="display:none;">
+    <thead>
+      <tr>
+        <th>Tanggal</th>
+        <th>Kapal</th>
+        <th>User</th>
+        <th>Keterangan</th>
+        <th>Nominal</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+</div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbzhokcaxbIl3cp8iciTOOqUHjpxYkuEXTZ2HSc470Lgdq83b94hgh3zn7RsfRG9voP5/exec";
+/* ===============================
+   KONFIGURASI
+================================ */
+const API_URL = "https://script.google.com/macros/s/AKfycbz8SFDGnETcYnhZmjs5cxl0zUnzLZqU5Wccua33-0KrobFnM0fnSkxUoBSQ_8xRQK3e/exec";
 
+/* ===============================
+   LOAD DATA PENDING
+================================ */
 function loadData() {
   fetch(API_URL, {
     method: "POST",
@@ -77,25 +126,36 @@ function loadData() {
   })
   .then(res => res.json())
   .then(res => {
-    const tbody = document.querySelector("#tabel tbody");
+    const loading = document.getElementById("loading");
+    const table = document.getElementById("tabel");
+    const tbody = table.querySelector("tbody");
+
+    loading.style.display = "none";
     tbody.innerHTML = "";
 
     if (res.status !== "success" || res.data.length === 0) {
-      tbody.innerHTML = "<tr><td colspan='6'>Tidak ada data pending</td></tr>";
+      table.style.display = "table";
+      tbody.innerHTML =
+        "<tr><td colspan='6' class='empty'>Tidak ada anfrakan pending</td></tr>";
       return;
     }
+
+    table.style.display = "table";
 
     res.data.forEach(item => {
       const tr = document.createElement("tr");
 
       tr.innerHTML = `
-        <td>${item.tanggal}</td>
+        <td>${new Date(item.tanggal).toLocaleString()}</td>
         <td>${item.kapal}</td>
         <td>${item.username}</td>
         <td>${item.keterangan}</td>
-        <td>${item.nominal}</td>
+        <td>${Number(item.nominal).toLocaleString()}</td>
         <td>
-          <button onclick="approve(${item.row})">Approve</button>
+          <button class="btn btn-approve"
+            onclick="approve(${item.row})">
+            Approve
+          </button>
         </td>
       `;
 
@@ -103,32 +163,42 @@ function loadData() {
     });
   })
   .catch(err => {
-    alert("Gagal load data: " + err);
+    document.getElementById("loading").innerText =
+      "Gagal memuat data: " + err;
   });
 }
 
+/* ===============================
+   APPROVE ANFRAKAN
+================================ */
 function approve(row) {
-  if (!confirm("Approve anfrakan ini?")) return;
+  if (!confirm("Setujui anfrakan ini?")) return;
 
   fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       action: "approveAnfrakan",
-      row: row,
-      admin: "ADMIN"
+      row: row
     })
   })
   .then(res => res.json())
   .then(res => {
-    alert("Approved!");
-    loadData();
+    if (res.status === "success") {
+      alert("Anfrakan disetujui");
+      loadData();
+    } else {
+      alert("Gagal approve");
+    }
   })
   .catch(err => {
-    alert("Error approve: " + err);
+    alert("Error koneksi: " + err);
   });
 }
 
+/* ===============================
+   INIT
+================================ */
 loadData();
 </script>
 
