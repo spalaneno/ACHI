@@ -1,79 +1,132 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Admin Approval - ACHI</title>
-<style>
-body { font-family: Arial; background:#111; color:#fff; padding:20px; }
-table { width:100%; border-collapse:collapse; }
-th,td { border:1px solid #444; padding:8px; }
-th { background:#b91c1c; }
-button { padding:6px 10px; margin:2px; cursor:pointer; }
-.approve { background:#16a34a; color:#fff; }
-.reject { background:#dc2626; color:#fff; }
-</style>
+  <meta charset="UTF-8">
+  <title>ADMIN - APPROVAL ANFRAKAN</title>
+  <style>
+    body {
+      background: #0e0e0e;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th {
+      background: #b71c1c;
+      padding: 10px;
+    }
+
+    td {
+      background: #1c1c1c;
+      padding: 8px;
+      text-align: center;
+    }
+
+    button {
+      background: green;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background: darkgreen;
+    }
+  </style>
 </head>
 <body>
 
 <h2>ADMIN – APPROVAL ANFRAKAN</h2>
 
-<table id="tbl">
-<thead>
-<tr>
-<th>Tanggal</th>
-<th>Kapal</th>
-<th>User</th>
-<th>Keterangan</th>
-<th>Nominal</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody></tbody>
+<table id="tabel">
+  <thead>
+    <tr>
+      <th>Tanggal</th>
+      <th>Kapal</th>
+      <th>User</th>
+      <th>Keterangan</th>
+      <th>Nominal</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
 </table>
 
 <script>
-const API_URL = "PASTE_URL_DEPLOY_TERBARU";
+const API_URL = "PASTE_URL_WEB_APP_KAMU_DI_SINI";
 
-function loadData(){
-  fetch(API_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ action:"getAnfrakanPending" })
+function loadData() {
+  fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "getAnfrakanPending"
+    })
   })
-  .then(r=>r.json())
-  .then(j=>{
-    const tb=document.querySelector("#tbl tbody");
-    tb.innerHTML="";
-    j.data.forEach(x=>{
-      tb.innerHTML+=`
-        <tr>
-          <td>${x.tanggal}</td>
-          <td>${x.kapal}</td>
-          <td>${x.username}</td>
-          <td>${x.keterangan}</td>
-          <td>${x.nominal}</td>
-          <td>
-            <button class="approve" onclick="aksi(${x.row},'APPROVED')">Approve</button>
-            <button class="reject" onclick="aksi(${x.row},'REJECTED')">Reject</button>
-          </td>
-        </tr>`;
+  .then(res => res.json())
+  .then(res => {
+    const tbody = document.querySelector("#tabel tbody");
+    tbody.innerHTML = "";
+
+    if (res.status !== "success" || res.data.length === 0) {
+      tbody.innerHTML = "<tr><td colspan='6'>Tidak ada data pending</td></tr>";
+      return;
+    }
+
+    res.data.forEach(item => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${item.tanggal}</td>
+        <td>${item.kapal}</td>
+        <td>${item.username}</td>
+        <td>${item.keterangan}</td>
+        <td>${item.nominal}</td>
+        <td>
+          <button onclick="approve(${item.row})">Approve</button>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
     });
+  })
+  .catch(err => {
+    alert("Gagal load data: " + err);
   });
 }
 
-function aksi(row,status){
-  fetch(API_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
+function approve(row) {
+  if (!confirm("Approve anfrakan ini?")) return;
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      action:"approveAnfrakan",
-      row:row,
-      status:status,
-      admin: localStorage.getItem("achi_user")
+      action: "approveAnfrakan",
+      row: row,
+      admin: "ADMIN"
     })
   })
-  .then(r=>r.json())
-  .then(()=>loadData());
+  .then(res => res.json())
+  .then(res => {
+    alert("Approved!");
+    loadData();
+  })
+  .catch(err => {
+    alert("Error approve: " + err);
+  });
 }
 
 loadData();
