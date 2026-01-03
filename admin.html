@@ -52,41 +52,45 @@ button:hover {
 <div id="list">Memuat data...</div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbyB4pNGh2_PJ448-OeiC8DYwR6NyyXjrNw0KzYsctq9BAP8G7ILh-HpGW629u6qdehK/exec";
-// ↑ URL DARI ANDA – JANGAN DIUBAH
+const API_URL = "https://script.google.com/macros/s/AKfycbyonZvaDb1MneShdg3OnhbS_JhRU26I26eP4HxBbf3a-jmNlSy36YjFmvUtiGKf5JSB/exec";
 
 fetch(API_URL + "?action=getPendingAnfrakan")
-  .then(res => res.json())
+  .then(response => response.json())
   .then(res => {
+
+    const container = document.getElementById("list");
+
     if (!res.data || res.data.length === 0) {
-      document.getElementById("list").innerHTML =
-        "<p>Tidak ada anfrakan pending</p>";
+      container.innerHTML = "<p>Tidak ada anfrakan pending</p>";
       return;
     }
 
     let html = "";
     res.data.forEach(item => {
       html += `
-        <div class="card">
-          <b>${item.kapal}</b><br>
-          Keterangan: ${item.keterangan}<br>
-          Nominal: Rp ${item.nominal}<br>
-          User: ${item.username}<br>
+        <div style="border:1px solid #444;padding:12px;margin-bottom:10px">
+          <b>Kapal:</b> ${item.kapal}<br>
+          <b>Keterangan:</b> ${item.keterangan}<br>
+          <b>Nominal:</b> Rp ${item.nominal.toLocaleString()}<br>
           <button onclick="approve(${item.row})">APPROVE</button>
         </div>
       `;
     });
 
-    document.getElementById("list").innerHTML = html;
+    container.innerHTML = html;
   })
-  .catch(() => {
-    document.getElementById("list").innerHTML = "Gagal memuat data";
+  .catch(err => {
+    document.getElementById("list").innerHTML =
+      "Gagal memuat data: " + err;
   });
 
 function approve(row) {
   fetch(API_URL + "?action=approve&row=" + row + "&admin=ADMIN")
     .then(res => res.json())
-    .then(() => location.reload());
+    .then(() => {
+      alert("Anfrakan disetujui");
+      location.reload();
+    });
 }
 </script>
 
